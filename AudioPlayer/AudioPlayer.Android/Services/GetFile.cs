@@ -14,6 +14,8 @@ using Android.Widget;
 using AudioPlayer.Droid.Services;
 using AudioPlayer.Services;
 using Xamarin.Forms;
+using Plugin.Permissions;
+using Plugin.Permissions.Abstractions;
 
 
 [assembly: Dependency(typeof(GetFile))]
@@ -23,12 +25,14 @@ namespace AudioPlayer.Droid.Services
     {
         public IList<string> GetFileLocation()
         {
+            var response = CrossPermissions.Current.RequestPermissionsAsync(Permission.Storage);
+
             var files = new List<string>();
             foreach (var dir in RootDirectory())
             {
                 if (Directory.Exists(dir))
                 {
-                    var file = Directory.EnumerateFiles(dir).ToList<string>();
+                    var file = Directory.EnumerateFiles(dir).ToList<string>();  
                     file.ForEach(f => { if (f.EndsWith("mp3")) files.Add(f);});
                 }
             }
