@@ -12,16 +12,19 @@ namespace AudioPlayer.Services
         public string Duration;
     }
 
-    public interface IAudio
+    public delegate void VolumeHandler(int volume);
+
+    public abstract class IAudio
     {
-        InfoMP3 GetInfo();
-        void PlayAudioFile(string filePath);
-        void Play();
-        void Stop();
-        void SetLooping(bool loop);
-        void SetVolume(int volume);
-        int GetMaxVolume();
-        int GetVolume();
-        void SetDataSource(string filePath);
+        public abstract event VolumeHandler VolumeEvent;
+        public abstract InfoMP3 GetInfo();
+        public abstract void PlayAudioFile(string filePath);
+        public abstract void Play();
+        public abstract void Stop();
+        public abstract void SetLooping(bool loop);
+        public abstract void SetVolume(int volume);
+        public abstract int GetMaxVolume();
+        public abstract int GetVolume();
+        public abstract void SetDataSource(string filePath);
     }
 }

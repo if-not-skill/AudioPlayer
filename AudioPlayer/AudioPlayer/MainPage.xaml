@@ -8,53 +8,38 @@
              x:Class="AudioPlayer.MainPage">
 
     <StackLayout BackgroundColor="#181818">
-        <ScrollView Orientation="Horizontal"
-                    BackgroundColor="#181818"
-                    HorizontalScrollBarVisibility="Never"
-                    VerticalScrollBarVisibility="Never">
-            <Grid Row="1" Column="2">
-                    <Image x:Name="ImageTrack" 
-                           Grid.Row="0" Grid.Column="0"
-                           Source="none.png"
-                           HorizontalOptions="CenterAndExpand"
-                           VerticalOptions="CenterAndExpand"/>
-
-                <ListView x:Name="MyListSongs" 
-                              Grid.Row="0" Grid.Column="1"
-                              SeparatorColor="#181818"
-                              ItemsSource="{Binding MySongs}"
-                              ItemSelected="MyListSongs_OnItemSelected">
-                    <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <!--SelectedItemBackgroundColor="#282828"-->
-                                <ViewCell>
-                                    <ViewCell.View>
-                                        <StackLayout Orientation="Horizontal" Margin="5">
-                                            <StackLayout HorizontalOptions="StartAndExpand" Spacing="0">
-                                                <Label Text="{Binding Name}"
+        <ListView x:Name="MyListSongs" 
+                  SeparatorColor="#181818"
+                  ItemsSource="{Binding MySongs}"
+                  ItemSelected="MyListSongs_OnItemSelected">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <ViewCell.View>
+                            <StackLayout Orientation="Horizontal" Margin="5">
+                                <StackLayout HorizontalOptions="StartAndExpand" Spacing="0">
+                                    <Label Text="{Binding Name}"
                                                        MaxLines="1"
                                                        TextColor="White"/>
-                                                <Label Text="{Binding Author}"
+                                    <Label Text="{Binding Author}"
                                                        MaxLines="1"
                                                        TextColor="#AAA4A0"/>
-                                            </StackLayout>
-                                            <StackLayout HorizontalOptions="EndAndExpand" 
+                                </StackLayout>
+                                <StackLayout HorizontalOptions="EndAndExpand" 
                                                          VerticalOptions="CenterAndExpand">
-                                                <Label TextColor="#AAA4A0"
+                                    <Label TextColor="#AAA4A0"
                                                        MaxLines="1"
                                                        Margin="10"
                                                        HorizontalTextAlignment="Center"
                                                        VerticalTextAlignment="Center"
                                                        Text="{Binding Duration}"/>
-                                            </StackLayout>
-                                        </StackLayout>
-                                    </ViewCell.View>
-                                </ViewCell>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-            </Grid>
-        </ScrollView>
+                                </StackLayout>
+                            </StackLayout>
+                        </ViewCell.View>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
 
         <StackLayout BackgroundColor="#282828" Spacing="0">
 
@@ -99,6 +84,7 @@
                 <Button Grid.Row="0"
                         Grid.Column="0"
                         x:Name="Back" 
+                        Clicked="Back_OnClicked"
                         ImageSource="pre.png"
                         BackgroundColor="#282828"
                         Scale="0.3"/>
@@ -114,6 +100,7 @@
                         Grid.Column="2"
                         Scale="0.3"
                         ImageSource="next.png"
+                        Clicked="Next_OnClicked"
                         BackgroundColor="#282828"/>
             </Grid>
 

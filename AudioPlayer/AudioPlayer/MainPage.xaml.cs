@@ -22,9 +22,9 @@ namespace AudioPlayer
         public List<string> MyList { get; } 
         public int MaxVolume { get; set; }
 
-        private bool _play = false;
-        private bool _repeat = false;
-        private bool _rand = false;
+        private bool _play;
+        private bool _repeat;
+        private bool _rand;
 
         private readonly string _sourcePlay;
         private readonly string _sourcePause;
@@ -37,7 +37,8 @@ namespace AudioPlayer
 
         private readonly AudioPlayerViewModel _player;
 
-        
+        private int _idCurrentSong;
+
         public MainPage()
         {   
             InitializeComponent();
@@ -54,11 +55,19 @@ namespace AudioPlayer
             _sourceRepeat = "repeat.png";
             _sourceNRepeat = "n_repeat.png";
 
+            _play = true;
+            _repeat = true;
+            _rand = true;
+
+            _idCurrentSong = 0;
+
             _player = new AudioPlayerViewModel(DependencyService.Get<IAudio>());
             _player.SetLooping(_repeat);
 
             MaxVolume = _player.GetMaxVolume();
             Volume.Value = _player.GetVolume();
+
+            _player.SubEventVolume(new VolumeHandler((int volume) => { Volume.Value = volume; }));
 
             AddSongsInMyListAsync();
 
@@ -75,8 +84,12 @@ namespace AudioPlayer
                     _player.UpdateInfo();
 
                     MySongs.Add(new Song(_player.GetNameSong(), _player.GetArtist(), _player.GetDuration(), el));
+                }
 
-                    //MySongs.Add(new Song("name", "artist", "14.5", el));
+                if (MyList.Count != 0)
+                {
+                    MyListSongs.SelectedItem = MySongs[0];
+                    _player.Stop();
                 }
             });
         }
@@ -90,12 +103,12 @@ namespace AudioPlayer
         {
             if (!(e.SelectedItem is Song mySong)) return;
 
+            _idCurrentSong = MySongs.IndexOf(mySong);
+
             _player.Play(mySong.Location);
 
-            if (_play == false)
-            {
-                Play.ImageSource = _sourcePause;
-            }
+            _play = false;
+            Play.ImageSource = _sourcePause;
 
             NameSong.Text = mySong.Name;
             Artist.Text = mySong.Author;
@@ -131,6 +144,43 @@ namespace AudioPlayer
             _player.SetLooping(_repeat);
             
             _repeat = !_repeat;
+        }
+
+        private void Back_OnClicked(object sender, EventArgs e)
+        {
+            if (_rand)
+            {
+                if (--_idCurrentSong < 0)
+                    _idCurrentSong = MySongs.Count - 1;
+            }
+            else
+            {
+                
+            }
+
+            _play = false;
+            Play.ImageSource = _sourcePause;
+
+            MyListSongs.SelectedItem = MySongs[_idCurrentSong];
+        }
+
+        private void Next_OnClicked(object sender, EventArgs e)
+        {
+            if (_rand)
+            {
+                if (++_idCurrentSong >= MySongs.Count)
+                    _idCurrentSong = 0;
+
+            }
+            else
+            {
+
+            }
+
+            _play = false;
+            Play.ImageSource = _sourcePause;
+
+            MyListSongs.SelectedItem = MySongs[_idCurrentSong];
         }
     }
 }

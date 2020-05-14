@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
-
+using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.Graphics;
@@ -38,20 +38,24 @@ namespace AudioPlayer.Droid.Services
         private readonly AudioManager _audioManager;
         private int _maxVolume;
 
+        public override event VolumeHandler VolumeEvent;
+
         private InfoMP3 _infoMp3;
+        private IAudio _audioImplementation;
 
         public AudioService()
         {
             _reader = new MediaMetadataRetriever();
 
-
             if (Forms.Context != null)
                 _audioManager = (AudioManager) Forms.Context.GetSystemService(Context.AudioService);
+
             _maxVolume = _audioManager.GetStreamMaxVolume(Stream.Music);
+            CheckVolumeAsync();
         }
 
 
-        public void SetDataSource(string filePath)
+        public override void SetDataSource(string filePath)
         {
             _reader.SetDataSource(filePath);
 
@@ -76,7 +80,7 @@ namespace AudioPlayer.Droid.Services
             }
         }
 
-        public void PlayAudioFile(string filePath)
+        public override void PlayAudioFile(string filePath)
         {
             SetDataSource(filePath);
 
@@ -92,46 +96,58 @@ namespace AudioPlayer.Droid.Services
             _mediaPlayer.PrepareAsync();
         }
 
-        public void Play()
+        public override void Play()
         {
             _mediaPlayer?.Start();
         }
 
-        public void Stop()
+        public override void Stop()
         {
             _mediaPlayer?.Pause();
         }
 
-        public void SetLooping(bool loop)
+        public override void SetLooping(bool loop)
         {
             if (_mediaPlayer == null) return;
             _mediaPlayer.Looping = loop;
         }
 
-        public InfoMP3 GetInfo()
+
+        public override InfoMP3 GetInfo()
         {
             return _infoMp3;
         }
 
-        // todo: Don't work. Rewrite.
-        public void SetVolume(int volume)
+        public override void SetVolume(int volume)
         {
             if( volume <= _maxVolume)
                 _audioManager.SetStreamVolume(Stream.Music, volume, 0);
-
-            //_audioManager.GetStreamVolume(Stream.Music);
-
-            //_mediaPlayer.SetVolume(leftVolume, rightVolume);
         }
 
+        private async void CheckVolumeAsync()
+        {
+            await Task.Run(() =>
+            {
+                var oldVolume = _audioManager.GetStreamVolume(Stream.Music);
+                while (true)
+                {
+                    int newVolume;
+                    if((newVolume = _audioManager.GetStreamVolume(Stream.Music)) != oldVolume)
+                    {
+                        oldVolume = newVolume;
+                        // call function to set my var in slider volume
+                        VolumeEvent?.Invoke(newVolume);
+                    }
+                }
+            });
+        }
 
-
-        public int GetMaxVolume()
+        public override int GetMaxVolume()
         {
             return _maxVolume;
         }
 
-        public int GetVolume()
+        public override int GetVolume()
         {
             return _audioManager.GetStreamVolume(Stream.Music);
         }
