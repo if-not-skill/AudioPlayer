@@ -13,10 +13,13 @@ namespace AudioPlayer.Services
     }
 
     public delegate void VolumeHandler(int volume);
+    public delegate void PositionHandler(int volume);
 
     public abstract class IAudio
     {
         public abstract event VolumeHandler VolumeEvent;
+        public abstract event PositionHandler PositionHandler;
+
         public abstract InfoMP3 GetInfo();
         public abstract void PlayAudioFile(string filePath);
         public abstract void Play();
@@ -26,5 +29,6 @@ namespace AudioPlayer.Services
         public abstract int GetMaxVolume();
         public abstract int GetVolume();
         public abstract void SetDataSource(string filePath);
+        
     }
 }

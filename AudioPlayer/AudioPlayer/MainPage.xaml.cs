@@ -18,8 +18,8 @@ namespace AudioPlayer
     [DesignTimeVisible(false)]
     public partial class MainPage : ContentPage
     {
-        public List<Song> MySongs { get; }
-        public List<string> MyList { get; } 
+        public List<Song> MySongs { get; set; }
+        //public List<string> MyList { get; }
         public int MaxVolume { get; set; }
 
         private bool _play;
@@ -43,8 +43,17 @@ namespace AudioPlayer
         {   
             InitializeComponent();
 
-            MyList = (List<string>)DependencyService.Get<IMyFile>().GetFileLocation();
+            _player = new AudioPlayerViewModel(DependencyService.Get<IAudio>());
+
             MySongs = new List<Song>();
+            AddSongsInMyListAsync();
+
+            _player.SetLooping(_repeat);
+
+            MaxVolume = _player.GetMaxVolume();
+            Volume.Value = _player.GetVolume();
+
+            _player.SubEventVolume(volume => { Volume.Value = volume; });
 
             _sourcePlay = "play.png";
             _sourcePause = "pause.png";
@@ -61,16 +70,6 @@ namespace AudioPlayer
 
             _idCurrentSong = 0;
 
-            _player = new AudioPlayerViewModel(DependencyService.Get<IAudio>());
-            _player.SetLooping(_repeat);
-
-            MaxVolume = _player.GetMaxVolume();
-            Volume.Value = _player.GetVolume();
-
-            _player.SubEventVolume(new VolumeHandler((int volume) => { Volume.Value = volume; }));
-
-            AddSongsInMyListAsync();
-
             BindingContext = this;
         }
 
@@ -78,6 +77,9 @@ namespace AudioPlayer
         {
             await Task.Run(() =>
             {
+
+                var MyList = (List<string>)DependencyService.Get<IMyFile>().GetFileLocation();
+
                 foreach (var el in MyList)
                 {
                     _player.SetDataSource(el);
@@ -86,11 +88,12 @@ namespace AudioPlayer
                     MySongs.Add(new Song(_player.GetNameSong(), _player.GetArtist(), _player.GetDuration(), el));
                 }
 
-                if (MyList.Count != 0)
-                {
-                    MyListSongs.SelectedItem = MySongs[0];
-                    _player.Stop();
-                }
+                
+
+                if (MyList.Count == 0) return;
+                
+                MyListSongs.SelectedItem = MySongs[0];
+                _player.Stop();
             });
         }
 

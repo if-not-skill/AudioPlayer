@@ -39,6 +39,7 @@ namespace AudioPlayer.Droid.Services
         private int _maxVolume;
 
         public override event VolumeHandler VolumeEvent;
+        public override event PositionHandler PositionHandler;
 
         private InfoMP3 _infoMp3;
         private IAudio _audioImplementation;
@@ -135,7 +136,6 @@ namespace AudioPlayer.Droid.Services
                     if((newVolume = _audioManager.GetStreamVolume(Stream.Music)) != oldVolume)
                     {
                         oldVolume = newVolume;
-                        // call function to set my var in slider volume
                         VolumeEvent?.Invoke(newVolume);
                     }
                 }
