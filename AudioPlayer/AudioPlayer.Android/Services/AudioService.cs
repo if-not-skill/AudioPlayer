@@ -1,28 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
-using Android.App;
-using Android.Content;
-using Android.Graphics;
 using Android.Media;
-using Android.OS;
-using Android.Provider;
-using Android.Runtime;
-using Android.Support.V7.View;
-using Android.Views;
-using Android.Widget;
 using AudioPlayer.Droid.Services;
 using AudioPlayer.Services;
 using Java.Lang;
-using Java.Text;
 using Xamarin.Forms;
-using static Xamarin.Forms.Forms;
 using Context = Android.Content.Context;
-using Image = Xamarin.Forms.Image;
 using Stream = Android.Media.Stream;
 using String = Java.Lang.String;
 
@@ -36,25 +19,56 @@ namespace AudioPlayer.Droid.Services
         private readonly MediaMetadataRetriever _reader;
 
         private readonly AudioManager _audioManager;
-        private int _maxVolume;
+        private readonly int _maxVolume;
 
         public override event VolumeHandler VolumeEvent;
         public override event PositionHandler PositionHandler;
 
         private InfoMP3 _infoMp3;
-        private IAudio _audioImplementation;
 
         public AudioService()
         {
             _reader = new MediaMetadataRetriever();
 
             if (Forms.Context != null)
-                _audioManager = (AudioManager) Forms.Context.GetSystemService(Context.AudioService);
+                _audioManager = (AudioManager)Forms.Context.GetSystemService(Context.AudioService);
 
             _maxVolume = _audioManager.GetStreamMaxVolume(Stream.Music);
+            
             CheckVolumeAsync();
+            CheckPositionAsync();
         }
 
+        private async void CheckVolumeAsync()
+        {
+            await Task.Run(() =>
+            {
+                var oldVolume = _audioManager.GetStreamVolume(Stream.Music);
+                while (true)
+                {
+                    int newVolume;
+                    if ((newVolume = _audioManager.GetStreamVolume(Stream.Music)) != oldVolume)
+                    {
+                        oldVolume = newVolume;
+                        VolumeEvent?.Invoke(newVolume);
+                    }
+                }
+            });
+        }
+
+        public async void CheckPositionAsync()
+        {
+            await Task.Run(() =>
+            {
+                while (true)
+                {
+                    if (_mediaPlayer != null && _mediaPlayer.IsPlaying)
+                    {
+                        PositionHandler?.Invoke(_mediaPlayer.CurrentPosition, _mediaPlayer.Duration);
+                    }
+                }
+            });
+        }
 
         public override void SetDataSource(string filePath)
         {
@@ -125,22 +139,6 @@ namespace AudioPlayer.Droid.Services
                 _audioManager.SetStreamVolume(Stream.Music, volume, 0);
         }
 
-        private async void CheckVolumeAsync()
-        {
-            await Task.Run(() =>
-            {
-                var oldVolume = _audioManager.GetStreamVolume(Stream.Music);
-                while (true)
-                {
-                    int newVolume;
-                    if((newVolume = _audioManager.GetStreamVolume(Stream.Music)) != oldVolume)
-                    {
-                        oldVolume = newVolume;
-                        VolumeEvent?.Invoke(newVolume);
-                    }
-                }
-            });
-        }
 
         public override int GetMaxVolume()
         {

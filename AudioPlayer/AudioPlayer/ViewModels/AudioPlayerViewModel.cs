@@ -10,9 +10,8 @@ namespace AudioPlayer.ViewModels
 
     class AudioPlayerViewModel
     {
-        private IAudio _audioPlayer;
+        private readonly IAudio _audioPlayer;
         private InfoMP3 _info;
-
 
         public AudioPlayerViewModel(IAudio audioPlayer)
         {
@@ -27,6 +26,11 @@ namespace AudioPlayer.ViewModels
         public void SubEventVolume(VolumeHandler dl)
         {
             _audioPlayer.VolumeEvent += dl;
+        }
+
+        public void SubEventPosition(PositionHandler dl)
+        {
+            _audioPlayer.PositionHandler += dl;
         }
 
         public void Play(string filePath)

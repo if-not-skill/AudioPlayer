@@ -13,7 +13,7 @@ namespace AudioPlayer.Services
     }
 
     public delegate void VolumeHandler(int volume);
-    public delegate void PositionHandler(int volume);
+    public delegate void PositionHandler(int position, int duration);
 
     public abstract class IAudio
     {

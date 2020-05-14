@@ -54,6 +54,11 @@ namespace AudioPlayer
             Volume.Value = _player.GetVolume();
 
             _player.SubEventVolume(volume => { Volume.Value = volume; });
+            _player.SubEventPosition((position, duration) =>
+            {
+                TrackDuration.Value = position;
+                TrackDuration.Maximum = duration;
+            });
 
             _sourcePlay = "play.png";
             _sourcePause = "pause.png";
@@ -77,7 +82,6 @@ namespace AudioPlayer
         {
             await Task.Run(() =>
             {
-
                 var MyList = (List<string>)DependencyService.Get<IMyFile>().GetFileLocation();
 
                 foreach (var el in MyList)
@@ -88,10 +92,10 @@ namespace AudioPlayer
                     MySongs.Add(new Song(_player.GetNameSong(), _player.GetArtist(), _player.GetDuration(), el));
                 }
 
-                
-
                 if (MyList.Count == 0) return;
-                
+
+                MyListSongs.ItemsSource = null;
+                MyListSongs.ItemsSource = MySongs;
                 MyListSongs.SelectedItem = MySongs[0];
                 _player.Stop();
             });
@@ -116,6 +120,17 @@ namespace AudioPlayer
             NameSong.Text = mySong.Name;
             Artist.Text = mySong.Author;
             Duration.Text = mySong.Duration;
+
+            //long dur = Long.ParseLong(_reader.ExtractMetadata(MetadataKey.Duration));
+            //var seconds = String.ValueOf((dur % 60000) / 1000);
+            //var minutes = String.ValueOf((dur / 60000));
+            //_infoMp3.Duration = minutes + ":" + seconds;
+
+            //var dur = mySong.Duration;
+            //string[] sa = dur.Split(':');
+            //int seconds = Convert.ToInt32(sa[0]) * 60000 * 60000 * 1000;
+            //int minutes = Convert.ToInt32(sa[1]) * 60000;
+
         }
 
         private void Play_OnClicked(object sender, EventArgs e)

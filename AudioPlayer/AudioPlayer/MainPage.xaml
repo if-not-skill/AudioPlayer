@@ -43,7 +43,8 @@
 
         <StackLayout BackgroundColor="#282828" Spacing="0">
 
-            <Slider HorizontalOptions="FillAndExpand"
+            <Slider x:Name="TrackDuration"
+                    HorizontalOptions="FillAndExpand"
                     MinimumTrackColor="#ACACAC"
                     ThumbColor="#ACACAC"
                     MaximumTrackColor="#AAA4A0"/>
@@ -51,7 +52,7 @@
             <StackLayout HorizontalOptions="Fill"
                          Orientation="Horizontal" 
                          Padding="5">
-                <Label x:Name="Timer" 
+                <Label x:Name="Position" 
                        HorizontalOptions="StartAndExpand"
                        Text="0:00"
                        MaxLines="1"
