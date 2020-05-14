@@ -25,6 +25,7 @@ namespace AudioPlayer.Droid.Services
         public override event PositionHandler PositionHandler;
 
         private InfoMP3 _infoMp3;
+        private IAudio _audioImplementation;
 
         public AudioService()
         {
@@ -65,6 +66,7 @@ namespace AudioPlayer.Droid.Services
                     if (_mediaPlayer != null && _mediaPlayer.IsPlaying)
                     {
                         PositionHandler?.Invoke(_mediaPlayer.CurrentPosition, _mediaPlayer.Duration);
+                        //System.Threading.Thread.Sleep(1000);
                     }
                 }
             });
@@ -93,6 +95,11 @@ namespace AudioPlayer.Droid.Services
                 var minutes = String.ValueOf((dur / 60000));
                 _infoMp3.Duration = minutes + ":" + seconds;
             }
+        }
+
+        public override void SeekTo(int msec)
+        {
+            _mediaPlayer.SeekTo(msec);
         }
 
         public override void PlayAudioFile(string filePath)

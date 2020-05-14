@@ -29,6 +29,7 @@ namespace AudioPlayer.Services
         public abstract int GetMaxVolume();
         public abstract int GetVolume();
         public abstract void SetDataSource(string filePath);
-        
+        public abstract void SeekTo(int msec);
+
     }
 }

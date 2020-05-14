@@ -19,7 +19,7 @@ namespace AudioPlayer
     public partial class MainPage : ContentPage
     {
         public List<Song> MySongs { get; set; }
-        //public List<string> MyList { get; }
+        public List<string> MyList { get; }
         public int MaxVolume { get; set; }
 
         private bool _play;
@@ -43,10 +43,8 @@ namespace AudioPlayer
         {   
             InitializeComponent();
 
+            MyList = (List<string>)DependencyService.Get<IMyFile>().GetFileLocation();
             _player = new AudioPlayerViewModel(DependencyService.Get<IAudio>());
-
-            MySongs = new List<Song>();
-            AddSongsInMyListAsync();
 
             _player.SetLooping(_repeat);
 
@@ -54,11 +52,7 @@ namespace AudioPlayer
             Volume.Value = _player.GetVolume();
 
             _player.SubEventVolume(volume => { Volume.Value = volume; });
-            _player.SubEventPosition((position, duration) =>
-            {
-                TrackDuration.Value = position;
-                TrackDuration.Maximum = duration;
-            });
+            _player.SubEventPosition(SetDuration);
 
             _sourcePlay = "play.png";
             _sourcePause = "pause.png";
@@ -75,29 +69,40 @@ namespace AudioPlayer
 
             _idCurrentSong = 0;
 
+            MySongs = new List<Song>();
+            AddSongsInMyListAsync();
+
             BindingContext = this;
+        }
+
+        void SetDuration(int position, int duration)
+        {
+            TrackDuration.Value = position;
+            TrackDuration.Maximum = duration;
         }
 
         private async void AddSongsInMyListAsync()
         {
             await Task.Run(() =>
             {
-                var MyList = (List<string>)DependencyService.Get<IMyFile>().GetFileLocation();
-
                 foreach (var el in MyList)
                 {
                     _player.SetDataSource(el);
                     _player.UpdateInfo();
 
                     MySongs.Add(new Song(_player.GetNameSong(), _player.GetArtist(), _player.GetDuration(), el));
+
+                    MyListSongs.ItemsSource = null;
+                    MyListSongs.ItemsSource = MySongs;
                 }
 
                 if (MyList.Count == 0) return;
 
                 MyListSongs.ItemsSource = null;
                 MyListSongs.ItemsSource = MySongs;
-                MyListSongs.SelectedItem = MySongs[0];
-                _player.Stop();
+
+                //MyListSongs.SelectedItem = MySongs[0];
+                //_player.Stop();
             });
         }
 
@@ -120,17 +125,6 @@ namespace AudioPlayer
             NameSong.Text = mySong.Name;
             Artist.Text = mySong.Author;
             Duration.Text = mySong.Duration;
-
-            //long dur = Long.ParseLong(_reader.ExtractMetadata(MetadataKey.Duration));
-            //var seconds = String.ValueOf((dur % 60000) / 1000);
-            //var minutes = String.ValueOf((dur / 60000));
-            //_infoMp3.Duration = minutes + ":" + seconds;
-
-            //var dur = mySong.Duration;
-            //string[] sa = dur.Split(':');
-            //int seconds = Convert.ToInt32(sa[0]) * 60000 * 60000 * 1000;
-            //int minutes = Convert.ToInt32(sa[1]) * 60000;
-
         }
 
         private void Play_OnClicked(object sender, EventArgs e)
@@ -199,6 +193,16 @@ namespace AudioPlayer
             Play.ImageSource = _sourcePause;
 
             MyListSongs.SelectedItem = MySongs[_idCurrentSong];
+        }
+
+        private void TrackDuration_OnValueChanged(object sender, ValueChangedEventArgs e)
+        {
+            _player.UnsubEventPosition(SetDuration);
+
+            if (Math.Abs(e.NewValue - e.OldValue) > 2500)
+                _player.SeekTo((int)(e.NewValue - e.OldValue));
+
+            _player.SubEventPosition(SetDuration);
         }
     }
 }

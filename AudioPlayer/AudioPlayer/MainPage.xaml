@@ -47,7 +47,8 @@
                     HorizontalOptions="FillAndExpand"
                     MinimumTrackColor="#ACACAC"
                     ThumbColor="#ACACAC"
-                    MaximumTrackColor="#AAA4A0"/>
+                    MaximumTrackColor="#AAA4A0"
+                    ValueChanged="TrackDuration_OnValueChanged"/>
 
             <StackLayout HorizontalOptions="Fill"
                          Orientation="Horizontal" 
@@ -72,12 +73,12 @@
                        FontSize="18"
                        MaxLines="1"
                        x:Name="NameSong"
-                       Text="null"/>
+                       Text=""/>
                 <Label HorizontalTextAlignment="Center"
                        x:Name="Artist"
                        MaxLines="1"
                        TextColor="#AAA4A0"
-                       Text="null"/>
+                       Text=""/>
             </StackLayout>
 
 

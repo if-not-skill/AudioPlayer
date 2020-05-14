@@ -33,6 +33,16 @@ namespace AudioPlayer.ViewModels
             _audioPlayer.PositionHandler += dl;
         }
 
+        public void UnsubEventPosition(PositionHandler dl)
+        {
+            _audioPlayer.PositionHandler -= dl;
+        }
+
+        public void SeekTo(int msec)
+        {
+            _audioPlayer.SeekTo(msec);
+        }
+
         public void Play(string filePath)
         {
             _audioPlayer.PlayAudioFile(filePath);
