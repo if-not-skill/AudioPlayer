@@ -12,8 +12,10 @@ namespace KillerAIMP
     public partial class MainPage : ContentPage
     {
         private List<Song> MySongs { get; set; }
+        private List<Song> _correctList;
+        
         private List<string> MyList { get; }
-
+        
         private bool _play;
         private bool _repeat;
         private bool _rand;
@@ -30,6 +32,8 @@ namespace KillerAIMP
         private readonly AudioPlayerViewModel _player;
 
         private int _idCurrentSong;
+
+        private Random _random;
 
         public MainPage()
         {
@@ -52,6 +56,7 @@ namespace KillerAIMP
             _player.SubEventPosition(SetDuration);
             
             MySongs = new List<Song>();
+            _correctList = new List<Song>();
             AddSongsInMyListAsync();
             
             _sourcePlay = "play.png";
@@ -65,6 +70,8 @@ namespace KillerAIMP
             
             _idCurrentSong = 0;
 
+            _random = new Random();
+            
             BindingContext = this;
         }
 
@@ -93,6 +100,8 @@ namespace KillerAIMP
 
             MyListSongs.ItemsSource = null;
             MyListSongs.ItemsSource = MySongs;
+
+            _correctList = new List<Song>(MySongs);
         }
 
         private void MyListSongs_OnItemSelected(object sender, SelectedItemChangedEventArgs e)
@@ -133,6 +142,24 @@ namespace KillerAIMP
             Rand.ImageSource = _rand ? _sourceRand : _sourceNRand;
             
             _rand = !_rand;
+
+            if (_rand)
+            {
+                for (var i = MySongs.Count - 1; i >= 1; i--)
+                {
+                    var j = _random.Next(i + 1);
+                    var temp = MySongs[j];
+                    MySongs[j] = MySongs[i];
+                    MySongs[i] = temp;
+                }
+            }
+            else
+            {
+                MySongs = new List<Song>(_correctList);
+            }
+            
+            MyListSongs.ItemsSource = null;
+            MyListSongs.ItemsSource = MySongs;
         }
         
         private void Repeat_OnClicked(object sender, EventArgs e)
@@ -145,16 +172,9 @@ namespace KillerAIMP
         
         private void Back_OnClicked(object sender, EventArgs e)
         {
-            if (_rand)
-            {
-                if (--_idCurrentSong < 0)
+            if (--_idCurrentSong < 0)
                     _idCurrentSong = MySongs.Count - 1;
-            }
-            else
-            {
-                
-            }
-        
+
             _play = false;
             Play.ImageSource = _sourcePause;
         
@@ -163,17 +183,9 @@ namespace KillerAIMP
         
         private void Next_OnClicked(object sender, EventArgs e)
         {
-            if (_rand)
-            {
-                if (++_idCurrentSong >= MySongs.Count)
-                    _idCurrentSong = 0;
-        
-            }
-            else
-            {
-        
-            }
-        
+            if (++_idCurrentSong >= MySongs.Count)
+                _idCurrentSong = 0;
+
             _play = false;
             Play.ImageSource = _sourcePause;
         

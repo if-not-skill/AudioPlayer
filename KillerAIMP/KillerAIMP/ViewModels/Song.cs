@@ -10,6 +10,14 @@
             Location = location;
         }
 
+        public Song(Song newSong)
+        {
+            Name = newSong.Name;
+            Author = newSong.Author;
+            Duration = newSong.Duration;
+            Location = newSong.Location;
+        }
+
         public string Name { get; set; }
         public string Author { get; set; }
         public string Duration { get; set; }
