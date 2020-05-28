@@ -101,7 +101,7 @@ namespace KillerAIMP
             MyListSongs.ItemsSource = null;
             MyListSongs.ItemsSource = MySongs;
 
-            _correctList = new List<Song>(MySongs);
+            _correctList.AddRange(MySongs);
         }
 
         private void MyListSongs_OnItemSelected(object sender, SelectedItemChangedEventArgs e)
@@ -155,7 +155,8 @@ namespace KillerAIMP
             }
             else
             {
-                MySongs = new List<Song>(_correctList);
+                MySongs.Clear(); 
+                MySongs.AddRange(_correctList);
             }
             
             MyListSongs.ItemsSource = null;
