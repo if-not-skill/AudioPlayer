@@ -9,7 +9,7 @@ using Plugin.Permissions;
 
 namespace KillerAIMP.Android
 {
-    [Activity(Label = "KillerAIMP", Theme = "@style/MainTheme", MainLauncher = true, Icon = "@drawable/icon",
+    [Activity(Label = "KillerAIMP", ScreenOrientation=ScreenOrientation.Portrait, Theme = "@style/MainTheme", MainLauncher = true, Icon = "@drawable/icon",
         ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
