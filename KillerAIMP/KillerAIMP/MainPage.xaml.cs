@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Threading.Tasks;
 using KillerAIMP.Services;
 using KillerAIMP.ViewModels;
 using Xamarin.Forms;
@@ -12,13 +10,14 @@ namespace KillerAIMP
     public partial class MainPage : ContentPage
     {
         private List<Song> MySongs { get; set; }
-        private List<Song> _correctList;
+        private readonly List<Song> _correctList;
         
         private List<string> MyList { get; }
         
-        private bool _play;
-        private bool _repeat;
-        private bool _rand;
+        private bool _bPlay;
+        private bool _bRepeat;
+        private bool _bRand;
+        private bool _bWork;
 
         private readonly string _sourcePlay;
         private readonly string _sourcePause;
@@ -33,7 +32,7 @@ namespace KillerAIMP
 
         private int _idCurrentSong;
 
-        private Random _random;
+        private readonly Random _random;
 
         public MainPage()
         {
@@ -43,11 +42,12 @@ namespace KillerAIMP
            
             _player = new AudioPlayerViewModel(DependencyService.Get<AAudio>());
             
-            _play = true;
-            _repeat = true;
-            _rand = true;
+            _bPlay = true;
+            _bRepeat = true;
+            _bRand = true;
+            _bWork = true;
 
-            _player.SetLooping(_repeat);
+            _player.SetLooping(_bRepeat);
             
             Volume.Maximum = _player.GetMaxVolume();
             Volume.Value = _player.GetVolume();
@@ -57,7 +57,7 @@ namespace KillerAIMP
             
             MySongs = new List<Song>();
             _correctList = new List<Song>();
-            AddSongsInMyListAsync();
+            AddSongsInMyList();
             
             _sourcePlay = "play.png";
             _sourcePause = "pause.png";
@@ -88,7 +88,7 @@ namespace KillerAIMP
             // CurrentPosition.Text = (position / 60000) + ":" + (position / 1000 % 60);
         }
 
-        private void AddSongsInMyListAsync()
+        private void AddSongsInMyList()
         {
             foreach (var el in MyList)
             {
@@ -107,13 +107,19 @@ namespace KillerAIMP
         private void MyListSongs_OnItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
             if (!(e.SelectedItem is Song mySong)) return;
-        
+
+            if (!_bWork)
+            {
+                _bWork = true;
+                return;
+            }
+
             _idCurrentSong = MySongs.IndexOf(mySong);
         
             _player.Play(mySong.Location);
             CurrentPosition.Text = "0:00";
 
-            _play = false;
+            _bPlay = false;
             Play.ImageSource = _sourcePause;
         
             NameSong.Text = mySong.Name;
@@ -123,7 +129,7 @@ namespace KillerAIMP
         
         private void Play_OnClicked(object sender, EventArgs e)
         {
-            if (_play)
+            if (_bPlay)
             {
                 _player.Play();
                 Play.ImageSource = _sourcePause;
@@ -134,41 +140,57 @@ namespace KillerAIMP
                 Play.ImageSource = _sourcePlay;
             }
                 
-            _play = !_play;
+            _bPlay = !_bPlay;
         }
         
         private void Rand_OnClicked(object sender, EventArgs e)
         {
-            Rand.ImageSource = _rand ? _sourceRand : _sourceNRand;
+            Rand.ImageSource = _bRand ? _sourceRand : _sourceNRand;
             
-            _rand = !_rand;
+            _bRand = !_bRand;
+            _bWork = false;
 
-            if (_rand)
+            var currentSong = MySongs[_idCurrentSong];
+            
+            if (!_bRand)
             {
+
+                Song temp;
                 for (var i = MySongs.Count - 1; i >= 1; i--)
                 {
                     var j = _random.Next(i + 1);
-                    var temp = MySongs[j];
+                    temp = MySongs[j];
                     MySongs[j] = MySongs[i];
                     MySongs[i] = temp;
                 }
+                
+                temp = MySongs[0];
+                MySongs[MySongs.IndexOf(currentSong)] = temp;
+                MySongs[0] = currentSong;
+                _idCurrentSong = 0;
+
             }
             else
             {
                 MySongs.Clear(); 
                 MySongs.AddRange(_correctList);
+                
+                _idCurrentSong = MySongs.IndexOf(currentSong);
             }
             
             MyListSongs.ItemsSource = null;
             MyListSongs.ItemsSource = MySongs;
+
+            MyListSongs.SelectedItem = null;
+            MyListSongs.SelectedItem = MySongs[_idCurrentSong];
         }
         
         private void Repeat_OnClicked(object sender, EventArgs e)
         {
-            Repeat.ImageSource = _repeat ? _sourceRepeat : _sourceNRepeat;
-            _player.SetLooping(_repeat);
+            Repeat.ImageSource = _bRepeat ? _sourceRepeat : _sourceNRepeat;
+            _player.SetLooping(_bRepeat);
             
-            _repeat = !_repeat;
+            _bRepeat = !_bRepeat;
         }
         
         private void Back_OnClicked(object sender, EventArgs e)
@@ -176,7 +198,7 @@ namespace KillerAIMP
             if (--_idCurrentSong < 0)
                     _idCurrentSong = MySongs.Count - 1;
 
-            _play = false;
+            _bPlay = false;
             Play.ImageSource = _sourcePause;
         
             MyListSongs.SelectedItem = MySongs[_idCurrentSong];
@@ -187,7 +209,7 @@ namespace KillerAIMP
             if (++_idCurrentSong >= MySongs.Count)
                 _idCurrentSong = 0;
 
-            _play = false;
+            _bPlay = false;
             Play.ImageSource = _sourcePause;
         
             MyListSongs.SelectedItem = MySongs[_idCurrentSong];
