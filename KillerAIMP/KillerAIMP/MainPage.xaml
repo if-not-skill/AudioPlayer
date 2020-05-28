@@ -83,27 +83,36 @@
                     <ColumnDefinition />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <Button Grid.Row="0"
-                        Grid.Column="0"
-                        x:Name="Back"
-                        Clicked="Back_OnClicked"
-                        ImageSource="pre.png"
-                        BackgroundColor="#282828"
-                        Scale="0.3"/>
-                <Button x:Name="Play"
-                        ImageSource="play.png"
-                        BackgroundColor="#282828"
+                <Image Grid.Row="0"
+                       Grid.Column="0"
+                       Source="pre.png"
+                       Scale="0.45"/>
+                <Button Clicked="Back_OnClicked"
+                        BackgroundColor="Transparent"
+                        Scale="0.45"
+                        Grid.Row="0"
+                        Grid.Column="0"/>
+                    
+                <Image x:Name="Play"
+                       Source="play.png"
+                       Grid.Row="0"
+                       Scale="0.8"
+                       Grid.Column="1"/>
+                <Button BackgroundColor="Transparent"
                         Grid.Row="0"
                         Grid.Column="1"
-                        Scale="0.45"
+                        Scale="0.8"
                         Clicked="Play_OnClicked"/>
-                <Button x:Name="Next"
-                        Grid.Row="0"
+                
+                <Image Grid.Row="0"
+                       Grid.Column="2"
+                       Source="next.png"
+                       Scale="0.45"/>
+                <Button Grid.Row="0"
                         Grid.Column="2"
-                        Scale="0.3"
-                        ImageSource="next.png"
+                        Scale="0.45"
                         Clicked="Next_OnClicked"
-                        BackgroundColor="#282828"/>
+                        BackgroundColor="Transparent"/>
             </Grid>
     
             <StackLayout Orientation="Horizontal" Spacing="0">
@@ -126,20 +135,26 @@
             </StackLayout>
     
             <Grid Row="1" Column="5" RowSpacing="0" ColumnSpacing="0" Padding="-5">
-                <Button x:Name="Rand"
-                        Grid.Row="0" Grid.Column="0"
-                        ImageSource="n_rand.png"
-                        Scale="0.17"
+                <Image x:Name="Rand"
+                       Grid.Row="0"
+                       Grid.Column="0"
+                       Scale="0.33"
+                       Source="n_rand.png"/>
+                <Button Grid.Row="0" Grid.Column="0"
+                        Scale="0.33"
                         HorizontalOptions="StartAndExpand"
-                        BackgroundColor="#282828"
+                        BackgroundColor="Transparent"
                         Clicked="Rand_OnClicked"/>
     
-                <Button x:Name="Repeat"
-                        Grid.Row="0" Grid.Column="4"
-                        ImageSource="n_repeat.png"
-                        Scale="0.17"
+                <Image x:Name="Repeat"
+                       Grid.Row="0"
+                       Grid.Column="4"
+                       Scale="0.33"
+                       Source="n_repeat.png"/>
+                <Button Grid.Row="0" Grid.Column="4"
+                        Scale="0.33"
                         HorizontalOptions="EndAndExpand"
-                        BackgroundColor="#282828"
+                        BackgroundColor="Transparent"
                         Clicked="Repeat_OnClicked"/>
             </Grid>
         </StackLayout>

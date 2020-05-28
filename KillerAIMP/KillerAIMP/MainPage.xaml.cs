@@ -7,9 +7,10 @@ using Xamarin.Forms;
 
 namespace KillerAIMP
 {
+    // ReSharper disable once RedundantExtendsListEntry
     public partial class MainPage : ContentPage
     {
-        private List<Song> MySongs { get; set; }
+        private List<Song> MySongs { get; }
         private readonly List<Song> _correctList;
         
         private List<string> MyList { get; }
@@ -84,8 +85,6 @@ namespace KillerAIMP
         {
             TrackDuration.Value = position;
             TrackDuration.Maximum = duration;
-
-            // CurrentPosition.Text = (position / 60000) + ":" + (position / 1000 % 60);
         }
 
         private void AddSongsInMyList()
@@ -120,7 +119,7 @@ namespace KillerAIMP
             CurrentPosition.Text = "0:00";
 
             _bPlay = false;
-            Play.ImageSource = _sourcePause;
+            Play.Source = _sourcePause;
         
             NameSong.Text = mySong.Name;
             Artist.Text = mySong.Author;
@@ -132,12 +131,12 @@ namespace KillerAIMP
             if (_bPlay)
             {
                 _player.Play();
-                Play.ImageSource = _sourcePause;
+                Play.Source = _sourcePause;
             }
             else
             {
                 _player.Stop();
-                Play.ImageSource = _sourcePlay;
+                Play.Source = _sourcePlay;
             }
                 
             _bPlay = !_bPlay;
@@ -145,7 +144,7 @@ namespace KillerAIMP
         
         private void Rand_OnClicked(object sender, EventArgs e)
         {
-            Rand.ImageSource = _bRand ? _sourceRand : _sourceNRand;
+            Rand.Source = _bRand ? _sourceRand : _sourceNRand;
             
             _bRand = !_bRand;
             _bWork = false;
@@ -187,7 +186,7 @@ namespace KillerAIMP
         
         private void Repeat_OnClicked(object sender, EventArgs e)
         {
-            Repeat.ImageSource = _bRepeat ? _sourceRepeat : _sourceNRepeat;
+            Repeat.Source = _bRepeat ? _sourceRepeat : _sourceNRepeat;
             _player.SetLooping(_bRepeat);
             
             _bRepeat = !_bRepeat;
@@ -199,7 +198,7 @@ namespace KillerAIMP
                     _idCurrentSong = MySongs.Count - 1;
 
             _bPlay = false;
-            Play.ImageSource = _sourcePause;
+            Play.Source = _sourcePause;
         
             MyListSongs.SelectedItem = MySongs[_idCurrentSong];
         }
@@ -210,7 +209,7 @@ namespace KillerAIMP
                 _idCurrentSong = 0;
 
             _bPlay = false;
-            Play.ImageSource = _sourcePause;
+            Play.Source = _sourcePause;
         
             MyListSongs.SelectedItem = MySongs[_idCurrentSong];
         }
