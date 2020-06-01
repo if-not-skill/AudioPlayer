@@ -7,7 +7,6 @@ using Java.Lang;
 using KillerAIMP.Services;
 using Xamarin.Forms;
 using String = Java.Lang.String;
-using Thread = Java.Lang.Thread;
 
 [assembly: Xamarin.Forms.Dependency(typeof(KillerAIMP.Android.Services.AudioService))]
 
@@ -22,7 +21,8 @@ namespace KillerAIMP.Android.Services
         private readonly int _maxVolume;
 
         public override event VolumeHandler VolumeEvent;
-        public override event PositionHandler PositionHandler;
+        public override event PositionHandler PositionEvent;
+        public override event CompletionHandler ComplectionEvent;
 
         private InfoMp3 _infoMp3;
 
@@ -38,7 +38,12 @@ namespace KillerAIMP.Android.Services
             CheckVolume();
             CheckPosition();
         }
-        
+
+        private void MediaPlayerOnCompletion(object sender, EventArgs e)
+        {
+            ComplectionEvent?.Invoke();
+        }
+
         private async void CheckVolume()
         {
             await Task.Run(async () =>
@@ -66,7 +71,7 @@ namespace KillerAIMP.Android.Services
                 {
                     if (_mediaPlayer != null && _mediaPlayer.IsPlaying)
                     {
-                        PositionHandler?.Invoke(_mediaPlayer.CurrentPosition, _mediaPlayer.Duration);
+                        PositionEvent?.Invoke(_mediaPlayer.CurrentPosition, _mediaPlayer.Duration);
                     }
 
                     await Task.Delay(1000);
@@ -108,10 +113,20 @@ namespace KillerAIMP.Android.Services
         {
             SetDataSource(filePath);
 
+            if (_mediaPlayer != null)
+            {
+                _mediaPlayer.Completion -= MediaPlayerOnCompletion;
+                _mediaPlayer.Stop();
+            }
+
             if (_mediaPlayer == null)
             {
                 _mediaPlayer = new MediaPlayer();
-                _mediaPlayer.Prepared += (s, e) => { _mediaPlayer.Start(); };
+                _mediaPlayer.Prepared += (s, e) =>
+                {
+                    _mediaPlayer.Start();
+                    _mediaPlayer.Completion += MediaPlayerOnCompletion;
+                };
             }
 
             _mediaPlayer.Reset();

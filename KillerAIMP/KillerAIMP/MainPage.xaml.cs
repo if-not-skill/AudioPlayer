@@ -73,13 +73,12 @@ namespace KillerAIMP
             _bWork = true;
             _bUserPressed = false;
 
-            _player.SetLooping(_bRepeat);
-            
             Volume.Maximum = _player.GetMaxVolume();
             Volume.Value = _player.GetVolume();
 
             _player.SubEventVolume(SetVolume);
             _player.SubEventPosition(SetDuration);
+            _player.SubCompletion(TrackCompletion);
             
             MySongs = new List<Song>();
             _correctList = new List<Song>();
@@ -101,6 +100,18 @@ namespace KillerAIMP
             _random = new Random();
 
             BindingContext = this;
+        }
+
+        private void TrackCompletion()
+        {
+            if (!_bRepeat)
+            {
+                _player.Play(MySongs[_idCurrentSong].Location);
+            }
+            else
+            {
+                Next_OnClicked(this, EventArgs.Empty);
+            }
         }
 
         private void SetVolume(int volume)
@@ -215,7 +226,6 @@ namespace KillerAIMP
         private void Repeat_OnClicked(object sender, EventArgs e)
         {
             Repeat.Source = _bRepeat ? _sourceRepeat : _sourceNRepeat;
-            _player.SetLooping(_bRepeat);
             
             _bRepeat = !_bRepeat;
         }

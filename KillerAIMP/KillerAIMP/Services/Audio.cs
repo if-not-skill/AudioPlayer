@@ -1,4 +1,7 @@
-﻿namespace KillerAIMP.Services
+﻿
+using System;
+
+namespace KillerAIMP.Services
 {
     public struct InfoMp3
     {
@@ -9,11 +12,14 @@
 
     public delegate void VolumeHandler(int volume);
     public delegate void PositionHandler(int position, int duration);
+    public delegate void CompletionHandler();
+    
     
     public abstract class AAudio
     {
         public abstract event VolumeHandler VolumeEvent;
-        public abstract event PositionHandler PositionHandler;
+        public abstract event PositionHandler PositionEvent;
+        public abstract event CompletionHandler ComplectionEvent;
 
         public abstract InfoMp3 GetInfo();
         public abstract void PlayAudioFile(string filePath);

@@ -1,4 +1,5 @@
-﻿using KillerAIMP.Services;
+﻿using System;
+using KillerAIMP.Services;
 
 namespace KillerAIMP.ViewModels
 {
@@ -26,15 +27,14 @@ namespace KillerAIMP.ViewModels
         {
             _audioPlayer.VolumeEvent -= dl;
         }
-        
         public void SubEventPosition(PositionHandler dl)
         {
-            _audioPlayer.PositionHandler += dl;
+            _audioPlayer.PositionEvent += dl;
         }
 
         public void UnsubEventPosition(PositionHandler dl)
         {
-            _audioPlayer.PositionHandler -= dl;
+            _audioPlayer.PositionEvent -= dl;
         }
 
         public void SeekTo(int msec)
@@ -95,6 +95,11 @@ namespace KillerAIMP.ViewModels
         public void Stop()
         {
             _audioPlayer.Stop();
+        }
+
+        public void SubCompletion(CompletionHandler dl)
+        {
+            _audioPlayer.ComplectionEvent += dl;
         }
     }
 }
