@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
+using System.Runtime.CompilerServices;
 using KillerAIMP.Services;
 using KillerAIMP.ViewModels;
 using Xamarin.Forms;
@@ -8,13 +11,26 @@ using Xamarin.Forms;
 namespace KillerAIMP
 {
     // ReSharper disable once RedundantExtendsListEntry
-    public partial class MainPage : ContentPage
+    public partial class MainPage : ContentPage, INotifyPropertyChanged
     {
         private List<Song> MySongs { get; }
         private readonly List<Song> _correctList;
         
         private List<string> MyList { get; }
-        
+
+        private string _currentText;
+
+        public string CurrentText
+        {
+            get => _currentText;
+
+            set
+            {
+                _currentText = value;
+                OnPropertyChanged();
+            }
+        }
+
         private bool _bPlay;
         private bool _bRepeat;
         private bool _bRand;
@@ -35,6 +51,13 @@ namespace KillerAIMP
         private int _idCurrentSong;
 
         private readonly Random _random;
+        
+        public new event PropertyChangedEventHandler PropertyChanged;
+
+        protected override void OnPropertyChanged([CallerMemberName] string name = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
 
         public MainPage()
         {
@@ -71,10 +94,12 @@ namespace KillerAIMP
             _sourceRepeat = "repeat.png";
             _sourceNRepeat = "n_repeat.png";
             
+            CurrentText = "0:0";
+            
             _idCurrentSong = 0;
 
             _random = new Random();
-            
+
             BindingContext = this;
         }
 
@@ -85,8 +110,10 @@ namespace KillerAIMP
 
         private void SetDuration(int position, int duration)
         {
-            TrackDuration.Value = position;
             TrackDuration.Maximum = duration;
+            TrackDuration.Value = position;
+
+            CurrentText = (position / 60000) + ":" + (position / 1000 % 60);
         }
 
         private void AddSongsInMyList()
@@ -116,9 +143,8 @@ namespace KillerAIMP
             }
 
             _idCurrentSong = MySongs.IndexOf(mySong);
-        
+
             _player.Play(mySong.Location);
-            CurrentPosition.Text = "0:00";
 
             _bPlay = false;
             Play.Source = _sourcePause;

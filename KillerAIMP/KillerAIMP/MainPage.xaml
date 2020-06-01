@@ -53,7 +53,7 @@
                          Orientation="Horizontal"
                          Padding="5">
                 <Label x:Name="CurrentPosition" 
-                       Text="0:00"
+                       Text="{Binding CurrentText}"
                        HorizontalOptions="StartAndExpand"
                        MaxLines="1"
                        TextColor="#AAA4A0"/>
