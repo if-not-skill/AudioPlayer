@@ -146,13 +146,6 @@ namespace KillerAIMP.Android.Services
             _mediaPlayer?.Pause();
         }
 
-        public override void SetLooping(bool loop)
-        {
-            if (_mediaPlayer == null) return;
-            _mediaPlayer.Looping = loop;
-        }
-
-
         public override InfoMp3 GetInfo()
         {
             return _infoMp3;

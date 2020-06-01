@@ -106,7 +106,7 @@ namespace KillerAIMP
             }
             else
             {
-                _bRepeat = false;
+                _bRepeat = true;
                 Application.Current.Properties["bRepeat"] = _bRepeat;
             }
             Repeat.Source = _bRepeat ? _sourceNRepeat : _sourceRepeat;
@@ -119,7 +119,7 @@ namespace KillerAIMP
             }
             else
             {
-                _bRand = false;
+                _bRand = true;
                 Application.Current.Properties["bRand"] = _bRand;
             }
             Rand.Source = _bRand ? _sourceNRand : _sourceRand ;

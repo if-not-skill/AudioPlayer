@@ -1,12 +1,7 @@
-﻿using System;
-using Android;
+﻿using Android;
 using Android.App;
 using Android.Content.PM;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.OS;
-using Plugin.Permissions;
 
 namespace KillerAIMP.Android
 {
@@ -14,7 +9,7 @@ namespace KillerAIMP.Android
         ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
-        private readonly string[] Permission =
+        private readonly string[] _permission =
         {
             Manifest.Permission.ReadExternalStorage,
             Manifest.Permission.WriteExternalStorage
@@ -30,7 +25,7 @@ namespace KillerAIMP.Android
             base.OnCreate(savedInstanceState);
             
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
-            RequestPermissions(Permission, RequestId);
+            RequestPermissions(_permission, RequestId);
             
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             LoadApplication(new App());

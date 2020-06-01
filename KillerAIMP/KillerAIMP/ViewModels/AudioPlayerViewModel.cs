@@ -13,11 +13,6 @@ namespace KillerAIMP.ViewModels
             _audioPlayer = audioPlayer;
         }
 
-        public void SetLooping(bool loop)
-        {
-            _audioPlayer.SetLooping(loop);
-        }
-
         public void SubEventVolume(VolumeHandler dl)
         {
             _audioPlayer.VolumeEvent += dl;

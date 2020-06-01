@@ -21,9 +21,7 @@ namespace KillerAIMP.Android.Services
     internal class GetFile : IMyFile
     {
         public IList<string> GetFileLocation()
-        {
-            var responce = CrossPermissions.Current.RequestPermissionsAsync(Permission.Storage);
-            
+        {   
             var files = new List<string>();
             foreach (var dir in RootDirectory())
             {

@@ -25,7 +25,6 @@ namespace KillerAIMP.Services
         public abstract void PlayAudioFile(string filePath);
         public abstract void Play();
         public abstract void Stop();
-        public abstract void SetLooping(bool loop);
         public abstract void SetVolume(int volume);
         public abstract int GetMaxVolume();
         public abstract int GetVolume();
