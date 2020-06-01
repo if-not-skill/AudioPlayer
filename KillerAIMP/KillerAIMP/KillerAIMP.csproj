@@ -10,6 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Xam.Plugins.Settings" Version="4.1.0-beta" />
         <PackageReference Include="Xamarin.Forms" Version="4.4.0.991640" />
     </ItemGroup>
 </Project>

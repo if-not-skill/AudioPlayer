@@ -5,6 +5,8 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using KillerAIMP.Services;
 using KillerAIMP.ViewModels;
+using Plugin.Settings;
+using Plugin.Settings.Abstractions;
 using Xamarin.Forms;
 
 
@@ -66,10 +68,8 @@ namespace KillerAIMP
             MyList = DependencyService.Get<IMyFile>().GetFileLocation() as List<string>;
            
             _player = new AudioPlayerViewModel(DependencyService.Get<AAudio>());
-            
+
             _bPlay = true;
-            _bRepeat = true;
-            _bRand = true;
             _bWork = true;
             _bUserPressed = false;
 
@@ -92,6 +92,19 @@ namespace KillerAIMP
             
             _sourceRepeat = "repeat.png";
             _sourceNRepeat = "n_repeat.png";
+
+            if (Application.Current.Properties.ContainsKey("bRepeat"))
+            {
+                _bRepeat = (bool) Application.Current.Properties["bRepeat"];
+            }
+            else
+            {
+                _bRepeat = false;
+                Application.Current.Properties["bRepeat"] = _bRepeat;
+            }
+            Repeat.Source = _bRepeat ? _sourceNRepeat : _sourceRepeat;
+            
+            _bRand = true;
             
             CurrentText = "0:0";
             
@@ -228,6 +241,8 @@ namespace KillerAIMP
             Repeat.Source = _bRepeat ? _sourceRepeat : _sourceNRepeat;
             
             _bRepeat = !_bRepeat;
+            Application.Current.Properties["bRepeat"] = _bRepeat;
+            
         }
         
         private void Back_OnClicked(object sender, EventArgs e)
