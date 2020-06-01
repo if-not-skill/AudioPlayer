@@ -19,6 +19,7 @@ namespace KillerAIMP
         private bool _bRepeat;
         private bool _bRand;
         private bool _bWork;
+        private bool _bUserPressed;
 
         private readonly string _sourcePlay;
         private readonly string _sourcePause;
@@ -47,6 +48,7 @@ namespace KillerAIMP
             _bRepeat = true;
             _bRand = true;
             _bWork = true;
+            _bUserPressed = false;
 
             _player.SetLooping(_bRepeat);
             
@@ -227,6 +229,26 @@ namespace KillerAIMP
         private void Volume_OnValueChanged(object sender, ValueChangedEventArgs e)
         {
             _player.SetVolume((int)Volume.Value);
+        }
+
+        private void TrackDuration_OnDragStarted(object sender, EventArgs e)
+        {            
+            _bUserPressed = true;
+            _player.UnsubEventPosition(SetDuration);
+        }
+        
+        private void TrackDuration_OnValueChanged(object sender, ValueChangedEventArgs e)
+        {
+            if (_bUserPressed)
+            {
+                _player.SeekTo((int) e.NewValue);
+            }
+        }
+
+        private void TrackDuration_OnDragCompleted(object sender, EventArgs e)
+        {
+            _bUserPressed = false;
+            _player.SubEventPosition(SetDuration);
         }
     }
 }

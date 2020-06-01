@@ -44,7 +44,10 @@
                     HorizontalOptions="FillAndExpand"
                     MinimumTrackColor="#ACACAC"
                     ThumbColor="#ACACAC"
-                    MaximumTrackColor="#AAA4A0"/>
+                    MaximumTrackColor="#AAA4A0"
+                    DragStarted="TrackDuration_OnDragStarted"
+                    ValueChanged="TrackDuration_OnValueChanged"
+                    DragCompleted="TrackDuration_OnDragCompleted"/>
     
             <StackLayout HorizontalOptions="Fill"
                          Orientation="Horizontal"
@@ -86,10 +89,10 @@
                 <Image Grid.Row="0"
                        Grid.Column="0"
                        Source="pre.png"
-                       Scale="0.45"/>
+                       Scale="0.5"/>
                 <Button Clicked="Back_OnClicked"
                         BackgroundColor="Transparent"
-                        Scale="0.45"
+                        Scale="0.5"
                         Grid.Row="0"
                         Grid.Column="0"/>
                     
@@ -107,10 +110,10 @@
                 <Image Grid.Row="0"
                        Grid.Column="2"
                        Source="next.png"
-                       Scale="0.45"/>
+                       Scale="0.5"/>
                 <Button Grid.Row="0"
                         Grid.Column="2"
-                        Scale="0.45"
+                        Scale="0.5"
                         Clicked="Next_OnClicked"
                         BackgroundColor="Transparent"/>
             </Grid>
