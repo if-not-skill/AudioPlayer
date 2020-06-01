@@ -1,12 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using Android.OS;
-using Java.Lang;
+using Android;
+using Android.Support.Design.Widget;
+using Android.Support.V4.App;
+using Android.Util;
+using Android.Views;
 using KillerAIMP.Services;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
+using Environment = Android.OS.Environment;
+using Exception = Java.Lang.Exception;
+using String = Java.Lang.String;
 
 
 [assembly: Xamarin.Forms.Dependency(typeof(KillerAIMP.Android.Services.GetFile))]
@@ -16,7 +22,7 @@ namespace KillerAIMP.Android.Services
     {
         public IList<string> GetFileLocation()
         {
-            _ = CrossPermissions.Current.RequestPermissionsAsync(Permission.Storage);
+            var responce = CrossPermissions.Current.RequestPermissionsAsync(Permission.Storage);
             
             var files = new List<string>();
             foreach (var dir in RootDirectory())
@@ -29,6 +35,8 @@ namespace KillerAIMP.Android.Services
             }
             return files;
         }
+
+        
 
         private IList<string> RootDirectory()
         {

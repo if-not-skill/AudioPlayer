@@ -92,7 +92,14 @@ namespace KillerAIMP
             
             _sourceRepeat = "repeat.png";
             _sourceNRepeat = "n_repeat.png";
-
+            
+            CurrentText = "0:0";
+            
+            _idCurrentSong = 0;
+            
+            _random = new Random();
+            
+            // check property bRepeat
             if (Application.Current.Properties.ContainsKey("bRepeat"))
             {
                 _bRepeat = (bool) Application.Current.Properties["bRepeat"];
@@ -103,15 +110,20 @@ namespace KillerAIMP
                 Application.Current.Properties["bRepeat"] = _bRepeat;
             }
             Repeat.Source = _bRepeat ? _sourceNRepeat : _sourceRepeat;
-            
-            _bRand = true;
-            
-            CurrentText = "0:0";
-            
-            _idCurrentSong = 0;
 
-            _random = new Random();
-
+            // check property bRand
+            if (Application.Current.Properties.ContainsKey("bRand"))
+            {
+                _bRand = (bool) Application.Current.Properties["bRand"];
+                MixListOrNot();
+            }
+            else
+            {
+                _bRand = false;
+                Application.Current.Properties["bRand"] = _bRand;
+            }
+            Rand.Source = _bRand ? _sourceNRand : _sourceRand ;
+            
             BindingContext = this;
         }
 
@@ -197,10 +209,23 @@ namespace KillerAIMP
         private void Rand_OnClicked(object sender, EventArgs e)
         {
             Rand.Source = _bRand ? _sourceRand : _sourceNRand;
-            
-            _bRand = !_bRand;
-            _bWork = false;
 
+            _bRand = !_bRand;
+            Application.Current.Properties["bRand"] = _bRand;
+            
+            _bWork = false;
+            
+            MixListOrNot();
+
+            MyListSongs.ItemsSource = null;
+            MyListSongs.ItemsSource = MySongs;
+
+            MyListSongs.SelectedItem = null;
+            MyListSongs.SelectedItem = MySongs[_idCurrentSong];
+        }
+
+        private void MixListOrNot()
+        {
             var currentSong = MySongs[_idCurrentSong];
             
             if (!_bRand)
@@ -228,12 +253,6 @@ namespace KillerAIMP
                 
                 _idCurrentSong = MySongs.IndexOf(currentSong);
             }
-            
-            MyListSongs.ItemsSource = null;
-            MyListSongs.ItemsSource = MySongs;
-
-            MyListSongs.SelectedItem = null;
-            MyListSongs.SelectedItem = MySongs[_idCurrentSong];
         }
         
         private void Repeat_OnClicked(object sender, EventArgs e)
